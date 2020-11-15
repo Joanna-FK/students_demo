@@ -1,5 +1,4 @@
 package com.sda.javagdy4.spring.students_demo.controller;
-
 import com.sda.javagdy4.spring.students_demo.model.Student;
 import com.sda.javagdy4.spring.students_demo.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -10,12 +9,19 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import java.time.LocalDate;
+import java.util.HashSet;
 @Controller
-@RequiredArgsConstructor
 @RequestMapping(path = "/student")
 public class StudentController {
     // kontroler  zakaz bezpośredniego odwoływania się do bazy danych.
     private final StudentService studentService;
+    private final Student defaultMaxStudent;
+    @Autowired // @RequiredArgsConstructor
+    public StudentController(StudentService studentService, Student defaultMaxStudent) {
+        this.studentService = studentService;
+        this.defaultMaxStudent = defaultMaxStudent;
+    }
     // http://localhost:8080/student
     @GetMapping("")
     public String getStudents(Model model) {
@@ -23,11 +29,12 @@ public class StudentController {
         return "student_list";
     }
     // ############ FORMULARZ
-    //    public String getForm(Model model, Student student){ // ponieważ Student jest POJO, to stworzy to nową instancję i ją wstrzyknie
-//        model.addAttribute("addedStudent", student);
     @GetMapping("/form")
     public String getForm(Model model) { // ponieważ Student jest POJO, to stworzy to nową instancję i ją wstrzyknie
-        model.addAttribute("addedStudent", new Student());
+        model.addAttribute("addedStudent", defaultMaxStudent);
+//    @GetMapping("/form")
+//    public String getForm(Model model) { // ponieważ Student jest POJO, to stworzy to nową instancję i ją wstrzyknie
+//        model.addAttribute("addedStudent", new Student());
         return "student_form";
     }
     @PostMapping("")
@@ -43,3 +50,4 @@ public class StudentController {
         return "student_details";
     }
 }
+
